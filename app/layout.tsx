@@ -2,15 +2,12 @@ import type { Metadata } from "next";
 import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 
-import Logo from "@/components/Logo";
-import Navigation from "@/components/Navigation";
+import Header from "@/components/Header";
 
 const josefinSans = Josefin_Sans({
   subsets: ["latin"],
-  variable: "--font-josefin-sans",
   display: "swap",
 });
-
 
 export const metadata: Metadata = {
   title: {
@@ -26,21 +23,29 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-console.log(josefinSans);
 
   return (
-    <html
-      lang="en"
-      className={`${josefinSans.variable}`}
-    >
-      <body className="min-h-full flex flex-col">
-        <header>
-          <Logo />
-          <Navigation />
-        </header>
-        <main>{children}</main>
+    <html lang="en">
+      <body
+        className={`${josefinSans.className} antialiased bg-primary-950 text-primary-100 min-h-screen flex flex-col`}
+      >
+        <Header />
+        <main className="flex-1 px-8 py-12">{children}</main>
         <footer>{new Date().getFullYear()} Copyright by The Wild Oasis</footer>
       </body>
     </html>
+    //    <html lang="en">
+    //     <body
+    //       className={`${josefin.className} antialiased bg-primary-950 text-primary-100 min-h-screen flex flex-col relative`}
+    //     >
+    //       <Header />
+
+    //       <div className="flex-1 px-8 py-12 grid">
+    //         <main className="max-w-7xl mx-auto w-full">
+    //           <ReservationProvider>{children}</ReservationProvider>
+    //         </main>
+    //       </div>
+    //     </body>
+    //   </html>
   );
 }
