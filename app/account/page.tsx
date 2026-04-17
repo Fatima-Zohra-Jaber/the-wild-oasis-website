@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:"Account",
+  title:"Guest area",
 }
 
 export default function Account() {
   return (
-    <div>Account page</div>
+    <h2 className="font-semibold text-2xl text-accent-400 mb-7">
+      Welcome, John Doe!
+    </h2>
   )
 }
