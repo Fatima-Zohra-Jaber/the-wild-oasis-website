@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import CabinCard from "@/components/CabinCard";
+import { getCabins } from "@/lib/data.service";
 
 export const metadata: Metadata = {
   title: "Cabins",
@@ -14,25 +15,9 @@ interface Cabin {
   image: string;
 }
 
-export default function Cabins() {
-  const cabins: Cabin[] = [
-    {
-      id: 1,
-      name: "A",
-      maxCapacity: 4,
-      regularPrice: 200,
-      discount: 50,
-      image: "/cabin-a.jpg",
-    },
-    {
-      id: 2,
-      name: "B",
-      maxCapacity: 6,
-      regularPrice: 300,
-      discount: 0,
-      image: "/cabin-b.jpg",
-    },
-  ];
+export default async function Cabins() {
+
+const cabins: Cabin[] = await getCabins();
 
   return (
     <div>
