@@ -26,3 +26,20 @@ export const getCabins = async function () {
 
   return data;
 };
+
+
+export const getCabin = async function (id: number) {
+  const { data, error } = await supabase
+    .from("cabins")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Cabin could not be loaded");
+  }
+
+  return data;
+};
+
