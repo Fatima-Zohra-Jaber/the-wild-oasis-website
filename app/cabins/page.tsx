@@ -1,23 +1,14 @@
 import type { Metadata } from "next";
-import CabinCard from "@/components/CabinCard";
-import { getCabins } from "@/lib/data.service";
+import { Suspense } from "react";
+
+import CabinList from "@/components/CabinList";
+import Loading from "./loading";
 
 export const metadata: Metadata = {
   title: "Cabins",
 };
 
-interface Cabin {
-  id: number;
-  name: string;
-  maxCapacity: number;
-  regularPrice: number;
-  discount: number;
-  image: string;
-}
-
-export default async function Cabins() {
-
-const cabins: Cabin[] = await getCabins();
+export default function Cabins() {
 
   return (
     <div>
@@ -32,14 +23,9 @@ const cabins: Cabin[] = await getCabins();
         home away from home. The perfect spot for a peaceful, calm vacation.
         Welcome to paradise.
       </p>
-
-      {cabins.length > 0 && (
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 xl:gap-14">
-          {cabins.map((cabin) => (
-            <CabinCard cabin={cabin} key={cabin.id} />
-          ))}
-        </div>
-      )}
+      <Suspense fallback={<Loading />}>
+        <CabinList />
+      </Suspense>
     </div>
   );
 }
