@@ -2,13 +2,20 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import CabinList from "@/components/CabinList";
+import Filter from "@/components/Filter";
 import Loading from "./loading";
 
 export const metadata: Metadata = {
   title: "Cabins",
 };
 
-export default function Cabins() {
+export default async function Cabins({
+  searchParams,
+}: {
+  searchParams: Promise<{ capacity?: string }>;
+}) {
+  const { capacity } = await searchParams;
+  const filter = capacity ?? "all";
 
   return (
     <div>
@@ -23,8 +30,11 @@ export default function Cabins() {
         home away from home. The perfect spot for a peaceful, calm vacation.
         Welcome to paradise.
       </p>
-      <Suspense fallback={<Loading />}>
-        <CabinList />
+      <div className="flex justify-end mb-6">
+        <Filter />
+      </div>
+      <Suspense fallback={<Loading />} key={filter}>
+        <CabinList filter={filter} />
       </Suspense>
     </div>
   );

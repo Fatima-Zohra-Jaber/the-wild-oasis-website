@@ -10,14 +10,32 @@ export interface Cabin {
   image: string;
 }
 
-async function CabinList() {
+
+interface CabinListProps {
+  filter: string;
+}
+
+async function CabinList({ filter }: CabinListProps) {
   const cabins: Cabin[] = await getCabins();
-  
-  if (!cabins || cabins.length === 0) return null;
+
+  if (!cabins?.length) return null;
+
+  const filteredCabins = cabins.filter((cabin) => {
+    if (filter === "small") {
+      return cabin.maxCapacity <= 3;
+    }
+    if (filter === "medium") {
+      return cabin.maxCapacity > 3 && cabin.maxCapacity <= 7;
+    }
+    if (filter === "large") {
+      return cabin.maxCapacity > 7;
+    }
+    return true;
+  });
 
   return (
     <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 xl:gap-14">
-      {cabins.map((cabin) => (
+      {filteredCabins.map((cabin) => (
         <CabinCard cabin={cabin} key={cabin.id} />
       ))}
     </div>
