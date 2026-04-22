@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import CabinList from "@/components/CabinList";
 import Filter from "@/components/Filter";
 import Loading from "./loading";
+import ReservationReminder from "@/components/ReservationReminder";
 
 export const metadata: Metadata = {
   title: "Cabins",
@@ -35,6 +36,7 @@ export default async function Cabins({
       </div>
       <Suspense fallback={<Loading />} key={filter}>
         <CabinList filter={filter} />
+        <ReservationReminder />
       </Suspense>
     </div>
   );

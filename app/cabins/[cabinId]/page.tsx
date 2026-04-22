@@ -1,9 +1,10 @@
 import { Metadata } from "next";
 import Image from "next/image";
-
-import { getCabin, getCabins } from "@/lib/data.service";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
+
+import Reservation from "@/components/Reservation";
 import TextExpander from "@/components/TextExpander";
+import { getCabin, getCabins } from "@/lib/data.service";
 
 export const generateMetadata = async ({
   params,
@@ -77,11 +78,11 @@ export default async function Page({
           </ul>
         </div>
       </div>
-
       <div>
-        <h2 className="text-5xl font-semibold text-center">
-          Reserve today. Pay on arrival.
+        <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+          Reserve {cabin.name} today. Pay on arrival.
         </h2>
+        <Reservation  cabin={cabin} />
       </div>
     </div>
   );
