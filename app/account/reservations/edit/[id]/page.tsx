@@ -1,15 +1,25 @@
+import SubmitButton from "@/components/SubmitButton";
+import { updateBooking } from "@/lib/actions";
+import { getBooking, getCabin } from "@/lib/data.service";
 
-export default function EditReservation() {
-  const reservationId = 123;
-  const maxCapacity = 6;
-  
+export default async function EditReservation({
+  params,
+}: Promise<{ params: { id: string } }>) {
+  const { id } = await params;
+  const bookingId = Number(id);
+  const booking = await getBooking(bookingId);
+
+  const { maxCapacity } = await getCabin(booking.cabinId);
+
   return (
-     <div>
+    <div>
       <h2 className="font-semibold text-2xl text-accent-400 mb-7">
-        Edit Reservation #{reservationId}
+        Edit Reservation #{bookingId}
       </h2>
 
-      <form className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col">
+      <form action={updateBooking} className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col">
+        <input type="hidden" value={bookingId} name="bookingId" />
+
         <div className="space-y-2">
           <label htmlFor="numGuests">How many guests?</label>
           <select
@@ -17,6 +27,7 @@ export default function EditReservation() {
             id="numGuests"
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
             required
+            defaultValue={booking.numGuests}
           >
             <option value="" key="">
               Select number of guests...
@@ -36,15 +47,16 @@ export default function EditReservation() {
           <textarea
             name="observations"
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
+            defaultValue={booking.observations}
           />
         </div>
 
         <div className="flex justify-end items-center gap-6">
-          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
+          <SubmitButton pendingValue="Updating...">
             Update reservation
-          </button>
+          </SubmitButton>
         </div>
       </form>
     </div>
-  )
+  );
 }

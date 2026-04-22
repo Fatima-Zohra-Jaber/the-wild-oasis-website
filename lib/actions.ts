@@ -25,3 +25,25 @@ export async function createBooking(bookingData: any, formData: FormData) {
 
   redirect("/cabins/thankyou");
 }
+
+export async function updateBooking(formData: FormData) {
+  const bookingId = Number(formData.get("bookingId"));
+  const numGuests = Number(formData.get("numGuests"));
+  const observations =
+    formData.get("observations")?.toString().slice(0, 1000) || "";
+
+  if (!numGuests || numGuests < 1)
+    throw new Error("Number of guests must be at least 1");
+
+  const updateData = { numGuests, observations };
+
+  const { error } = await supabase
+    .from("bookings")
+    .update(updateData)
+    .eq("id", bookingId)
+    .select()
+    .single();
+  if (error) throw new Error("Booking could not be updated");
+
+  revalidatePath(`/account/reservations`);
+}
