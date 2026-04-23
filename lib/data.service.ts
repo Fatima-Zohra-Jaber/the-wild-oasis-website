@@ -29,7 +29,6 @@ export const getCabins = async function () {
   return data;
 };
 
-
 export const getCabin = async function (id: number) {
   const { data, error } = await supabase
     .from("cabins")
@@ -46,11 +45,11 @@ export const getCabin = async function (id: number) {
 };
 
 export async function getSettings() {
-  const { data, error } = await supabase.from('settings').select('*').single();
+  const { data, error } = await supabase.from("settings").select("*").single();
 
   if (error) {
     console.error(error);
-    throw new Error('Settings could not be loaded');
+    throw new Error("Settings could not be loaded");
   }
 
   return data;
@@ -63,14 +62,14 @@ export async function getBookedDatesByCabinId(cabinId: number) {
 
   // Getting all bookings
   const { data, error } = await supabase
-    .from('bookings')
-    .select('*')
-    .eq('cabinId', cabinId)
+    .from("bookings")
+    .select("*")
+    .eq("cabinId", cabinId)
     .or(`startDate.gte.${today},status.eq.checked-in`);
 
   if (error) {
     console.error(error);
-    throw new Error('Bookings could not get loaded');
+    throw new Error("Bookings could not get loaded");
   }
 
   // Converting to actual dates to be displayed in the date picker
@@ -86,3 +85,40 @@ export async function getBookedDatesByCabinId(cabinId: number) {
   return bookedDates;
 }
 
+export const getGuest = async function (email: string) {
+  const { data, error } = await supabase
+    .from("guests")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  if (error) notFound();
+
+  return data;
+};
+
+export async function getBooking(id: number) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) throw new Error("Booking could not get loaded");
+
+  return data;
+}
+
+export async function getBookings(guestId: number) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(
+      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, cabins(name, image)",
+    )
+    .eq("guestId", guestId)
+    .order("startDate");
+
+  if (error) throw new Error("Bookings could not get loaded");
+
+  return data;
+}

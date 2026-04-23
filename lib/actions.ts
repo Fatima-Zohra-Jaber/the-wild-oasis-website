@@ -4,6 +4,36 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { supabase } from "./supabase";
 
+export async function updateGuest(
+  prevState: { success?: boolean; error?: string } | null,
+  formData: FormData,
+): Promise<{
+  success?: boolean | undefined;
+  error?: string | undefined;
+}> {
+  const nationalityRaw = formData.get("nationality")?.toString() ?? "";
+  const [nationality, countryFlag] = nationalityRaw.split("%");
+  const nationalID = formData.get("nationalID")?.toString().trim();
+
+  if (!nationality || !countryFlag) return { error: "Nationality is required" };
+
+  if (!nationalID || !/^[a-zA-Z0-9]{6,12}$/.test(nationalID))
+    return { error: "Invalid National ID" };
+
+  const updateData = { nationality, countryFlag, nationalID };
+
+  const { error } = await supabase
+    .from("guests")
+    .update(updateData)
+    .eq("email", "example@gmail.com");
+
+  if (error)
+    return { error: `Failed to update guest profile: ${error.message}` };
+
+  revalidatePath("/account/profile");
+  return { success: true };
+}
+
 export async function createBooking(bookingData: any, formData: FormData) {
   const newBooking = {
     ...bookingData,
@@ -46,6 +76,7 @@ export async function updateBooking(formData: FormData) {
   if (error) throw new Error("Booking could not be updated");
 
   revalidatePath(`/account/reservations`);
+  redirect("/account/reservations");
 }
 
 export async function deleteBooking(bookingId: number) {
