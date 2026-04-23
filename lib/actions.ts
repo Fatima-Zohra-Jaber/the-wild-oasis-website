@@ -47,3 +47,14 @@ export async function updateBooking(formData: FormData) {
 
   revalidatePath(`/account/reservations`);
 }
+
+export async function deleteBooking(bookingId: number) {
+  const { error } = await supabase
+    .from("bookings")
+    .delete()
+    .eq("id", bookingId);
+
+  if (error) throw new Error("Booking could not be deleted");
+
+  revalidatePath(`/account/reservations`);
+}
